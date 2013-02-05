@@ -22,7 +22,7 @@ static void init(void) {
     ADPCFG = 0b11111111;
     // TODO: Assumes pin setup.
 
-    // Set as outputs: RB0, RB1, RB2, RB4, RB6, RB7
+    // Set as outputs: RB0, RB1, RB2, RB3, RB6, RB7
     //TRISB = 0b1111111100110000;
     TRISB = 0b1111111100110000;
     // Set as outputs: RC13, RC14, RC15 

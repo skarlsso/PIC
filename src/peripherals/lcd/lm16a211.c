@@ -139,6 +139,10 @@ void lcd_dd_ram_address_set(char address) {
     lcd_send_command(DD_RAM_ADDRESS_SET_BITS(address));
 }
 
+void lcd_move_cursor_to_start_of_second_line(void) {
+    lcd_dd_ram_address_set(0b11000000);
+}
+
 #define RIGHT 0
 #define LEFT  1
 #define DISPLAY 0

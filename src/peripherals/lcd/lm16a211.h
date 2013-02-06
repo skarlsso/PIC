@@ -105,6 +105,7 @@ void lcd_send_command(unsigned char data);
 
 void lcd_move_cursor_right(int amount);
 void lcd_move_cursor_left(int amount);
+void lcd_move_cursor_to_start_of_second_line();
 
 void lcd_shift_display_right();
 void lcd_shift_display_left();

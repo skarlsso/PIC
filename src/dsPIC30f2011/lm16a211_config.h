@@ -8,24 +8,21 @@
 
 // Turn RB0, RB1, RB2, RB3 into output pins.
 #define PREPARE_FOR_READ_FROM_LCD \
-    TRISB = 0b1111111100111111
-    //TRISB |= 0b00001111
+    TRISB |= 0b00001111
 
 // Turn RBO, RB1, RB2, RB3 into input pins.
 #define PREPARE_FOR_WRITE_TO_LCD \
-    TRISB = 0b1111111100110000
-    //TRISB &= 0b11110000
+    TRISB &= 0b11110000
 
-// Set RC13 into an input pin.
-// FIXME: RC14, RC15 is hardcoded
 #define PRE_LCD_INIT \
-    /* Set input output bits. */ \
-    TRISB = 0b1111111100110000; \
-    TRISC = 0b0001111111111111; \
-    /* Clear the output bits */ \
+    /* Set input/output pins. */ \
+    TRISB = 0b00110000; \
+    /* Set RC14 into an input pin. */ \
+    TRISCbits.TRISC14 = 0; \
+    /* Clear the output bits. */ \
     LATB = 0; \
     LATC = 0; \
-    /* Change to digital pins */ \
+    /* Change to digital pins. */ \
     ADPCFG = 0b11111111;
 
 // PIC Output pins to the LCD, available after PREPARE_FOR_WRITE_TO_LCD.

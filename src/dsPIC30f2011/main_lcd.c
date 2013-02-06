@@ -12,7 +12,20 @@ _FBORPOR(MCLR_DIS & PWRT_64);    // Disable reset pin & Power-up timer
 
 static struct tagRCONBITS RCONbits_saved;
 
+static void rcon_iopuwr_check() {
+#if !NO_DEBUG
+    // Have had problems where __delay32 resets with IOPUWR. Show the bit.
+    if (RCONbits_saved.IOPUWR) {
+        DEBUG_BIT_1 = 1;
+    } else {
+        DEBUG_BIT_1 = 0;
+    }
+#endif
+}
+
 static void init(void) {
+    debug_init();
+
     // Save RCON for later debugging.
     RCONbits_saved = RCONbits;
     RCON = 0;
@@ -27,15 +40,8 @@ int main(void) {
 
     // The pin setup has been placed in PRE_LCD_INIT, which is called from lcd_init().
     lcd_init(); 
-    
-#if !NO_DEBUG
-    // Have had problems where __delay32 resets with IOPUWR. Show the bit.
-    if (RCONbits_saved.IOPUWR) {
-        DEBUG_BIT_1 = 1;
-    } else {
-        DEBUG_BIT_1 = 0;
-    }
-#endif
+
+    rcon_iopuwr_check();    
 
     while (1) {
         //example0();

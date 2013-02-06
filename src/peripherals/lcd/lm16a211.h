@@ -74,17 +74,17 @@ inline static void compiler_check_for_config_mappings() {
 #define CURSOR_BIT          0b00000010
 #define BLINK_BIT           0b00000001
 
-// Function set
-#define FUNCTION_SET_BITS(bits) (0b00101000 | bits)
-#define DATA_LENGTH_8_BIT        0b00010000
-#define DATA_LENGTH_4_BIT        0b00000000
-
 // Display/cursor shift
 #define DISPLAY_CURSOR_SHIFT_BITS(bits) (0b00010000 | bits)
 #define SHIFT_DISPLAY_BIT                0b00001000
 #define MOVE_CURSOR_BIT                  0b00000000
 #define SHIFT_RIGHT_BIT                  0b00000100
 #define SHIFT_LEFT_BIT                   0b00000000
+
+// Function set
+#define FUNCTION_SET_BITS(bits) (0b00101000 | bits)
+#define DATA_LENGTH_8_BIT        0b00010000
+#define DATA_LENGTH_4_BIT        0b00000000
 
 // CG RAM address set
 #define CG_RAM_ADDRESS_SET_BITS(bits) (0b01000000 | (bits & 0b00111111))

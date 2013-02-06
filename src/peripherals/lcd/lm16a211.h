@@ -122,8 +122,8 @@ inline static void compiler_check_for_config_mappings() {
 void lcd_init(void);
 
 void lcd_send_str(const char* str);
-void lcd_send_char(char c);
-void lcd_send_command(char data);
+void lcd_send_char(unsigned char c);
+void lcd_send_command(unsigned char data);
 
 void lcd_move_cursor_right(int amount);
 void lcd_move_cursor_left(int amount);

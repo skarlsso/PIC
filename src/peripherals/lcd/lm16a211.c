@@ -9,24 +9,20 @@
 // The longest time we have to wait, if we use the busy flag.
 #define MAX_COMMAND_DELAY_IN_MS 10
 
-#define LCD_CTRL_RS_CHARACTER 1
-#define LCD_CTRL_RS_COMMAND   0
-#define LCD_CTRL_RW_WRITE     0
-#define LCD_CTRL_RW_READ      1
+#define COMMAND 0
+#define DATA    1
+#define WRITE   0
+#define READ    1
 
-#define lcd_set_mode(rs, rw) \
-    LCD_RS = rs; \
+#define lcd_set_mode(rw, type) \
+    LCD_RS = type; \
     LCD_RW = rw; \
-    delay_ns_with_offset(DELAY_OFFSET, LCD_tAS);
-
-#define lcd_set_write_character()  lcd_set_mode(LCD_CTRL_RS_CHARACTER, LCD_CTRL_RW_WRITE)
-#define lcd_set_write_command()    lcd_set_mode(LCD_CTRL_RS_COMMAND,   LCD_CTRL_RW_WRITE)
-#define lcd_set_read_command()     lcd_set_mode(LCD_CTRL_RS_COMMAND,   LCD_CTRL_RW_READ)
+    delay_ns_with_offset(DELAY_OFFSET, LCD_tAS)
 
 static void lcd_wait_until_not_busy() {
     PREPARE_FOR_READ_FROM_LCD;
 
-    lcd_set_read_command();
+    lcd_set_mode(READ, COMMAND);
     
     int busy = 1;
     int loop_count = 0;
@@ -74,22 +70,28 @@ static void lcd_send4_no_wait(unsigned char data) {
     LCD_E = 0;
 }
 
-static void lcd_send8_no_wait(unsigned char data) {
+static void lcd_send8(unsigned char data, int type) {
+    lcd_set_mode(WRITE, type);
     lcd_send4_no_wait(data >> 4);
     lcd_send4_no_wait(data);
+    lcd_wait_busy();
 }
 
-static void lcd_send8(unsigned char data) {
-    lcd_send8_no_wait(data);
+
+static void lcd_send_command4(unsigned char data) {
+    lcd_set_mode(WRITE, COMMAND);
+    lcd_send4_no_wait(data);
     lcd_wait_busy();
+}
+
+void lcd_send_command(unsigned char data) {
+    lcd_send8(data, COMMAND);
 }
 
 
 void lcd_send_str(const char* str) {
     int i;
     
-    lcd_set_write_character();
-
 // Until code is stable
 #define LCD_SEND_STR_MAX_LENGTH 20
 
@@ -98,27 +100,21 @@ void lcd_send_str(const char* str) {
         if (c == '\0') {
             break;
         }
-        lcd_send8(c);
+        lcd_send_char(c);
     }
 }
 
 // High-level functions
 
-void lcd_send_char(char c) {
-    lcd_set_write_character();
-    lcd_send8(c);
-}
-
-void lcd_send_command(char data) {
-    lcd_set_write_command();
-    lcd_send8(data);
+void lcd_send_char(unsigned char c) {
+    lcd_send8(c, DATA);
 }
 
 
-#define RIGHT 1
-#define LEFT  0
-#define DISPLAY 1
-#define CURSOR  0
+#define RIGHT 0
+#define LEFT  1
+#define DISPLAY 0
+#define CURSOR  1
 
 static void lcd_move_cursor_or_shift_display(char display_or_cursor, char right_or_left) {
     int direction = (right_or_left == RIGHT ? SHIFT_RIGHT_BIT : SHIFT_LEFT_BIT);
@@ -171,25 +167,21 @@ void lcd_init(void) {
     // Initial delay > 15ms.
     delay_ns(20UL * 1000UL * 1000UL);
 
-    lcd_set_write_command();
-
     // Only 4-bit data lenght supported, yet.
     unsigned char fs_bits = FUNCTION_SET_BITS(DATA_LENGTH_4_BIT);
     
     // Setup function set in 8-bit mode
-	lcd_send4_no_wait(fs_bits >> 4);
-    // Can't check busy flag (?), must do a manual wait.
-    delay_ns(5 * 1000UL * 1000UL);
+    lcd_send_command4(fs_bits >> 4);
 
 	// Setup function set in 4-bit mode
-    lcd_send8(fs_bits);
+    lcd_send_command(fs_bits);
 
     // Turn on display with blinking cursor
-    lcd_send8(DISPLAY_BITS(DISPLAY_BIT | CURSOR_BIT | BLINK_BIT));
+    lcd_send_command(DISPLAY_BITS(DISPLAY_BIT | CURSOR_BIT | BLINK_BIT));
 
     // Entry mode
-    lcd_send8(ENTRY_MODE_SET_BITS(ENTRY_INCREMENT_BIT|ENTRY_FREEZE_DISPLAY_BIT));
-    
+    lcd_send_command(ENTRY_MODE_SET_BITS(ENTRY_INCREMENT_BIT|ENTRY_FREEZE_DISPLAY_BIT));
+
     // Clear
-    lcd_send8(DISPLAY_CLEAR_BITS);
+    lcd_send_command(DISPLAY_CLEAR_BITS);
 }

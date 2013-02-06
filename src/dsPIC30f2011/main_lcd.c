@@ -16,15 +16,6 @@ static void init(void) {
     // Save RCON for later debugging.
     RCONbits_saved = RCONbits;
     RCON = 0;
-
-#if !NO_DEBUG
-    // Have had problems where __delay32 resets with IOPUWR. Show the bit.
-    if (RCONbits_saved.IOPUWR) {
-        DEBUG_BIT_1 = 1;
-    } else {
-        DEBUG_BIT_1 = 0;
-    }
-#endif
 }
 
 int main(void) {
@@ -33,6 +24,16 @@ int main(void) {
     // The pin setup has been placed in PRE_LCD_INIT, which is called from lcd_init().
     lcd_init(); 
     
+#if !NO_DEBUG
+    // Have had problems where __delay32 resets with IOPUWR. Show the bit.
+    if (RCONbits_saved.IOPUWR) {
+        DEBUG_BIT_1 = 1;
+    } else {
+        DEBUG_BIT_1 = 0;
+    }
+#endif
+
+
     lcd_send_str("0123456789ABCDEF");
     while (1) {
         int i;

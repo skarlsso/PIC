@@ -20,6 +20,7 @@ static void init(void) {
 
 void example0(void);
 void example1(void);
+void example2(void);
 
 int main(void) {
     init();
@@ -36,7 +37,11 @@ int main(void) {
     }
 #endif
 
-    example1();
+    while (1) {
+        //example0();
+        //example1();
+        example2();
+    }
 
     return 0;
 }
@@ -86,6 +91,44 @@ void example1(void) {
     delay_ms(delay); lcd_shift_display_right();
     delay_ms(delay); lcd_move_cursor_right(1);
     delay_ms(delay); lcd_send_char('5');
+    delay_ms(delay); lcd_home();
+    delay_ms(delay * 2);
+}
+
+void example2(void) {
+    int delay = 500;
+    lcd_clear();
+    delay_ms(delay); lcd_send_char('S');
+    delay_ms(delay); lcd_send_char('H');
+    delay_ms(delay); lcd_send_char('A');
+    delay_ms(delay); lcd_send_char('R');
+    delay_ms(delay); lcd_send_char('P');
+    delay_ms(delay); lcd_send_char(' ');
+    delay_ms(delay); lcd_send_char('L');
+    delay_ms(delay); lcd_send_char('C');
+    delay_ms(delay); lcd_send_char('D');
+    delay_ms(delay); lcd_send_char(' ');
+    delay_ms(delay); lcd_send_char('U');
+    delay_ms(delay); lcd_send_char('N');
+    delay_ms(delay); lcd_send_char('I');
+    delay_ms(delay); lcd_send_char('T');
+    delay_ms(delay); lcd_move_cursor_to_start_of_second_line();
+    delay_ms(delay); lcd_send_char('L');
+    delay_ms(delay); lcd_send_char('M');
+    delay_ms(delay); lcd_send_char('A');
+    delay_ms(delay); lcd_send_char('1');
+    delay_ms(delay); lcd_send_char('6');
+    delay_ms(delay); lcd_send_char('2');
+    delay_ms(delay); lcd_send_char('5');
+    delay_ms(delay); lcd_send_char('1');
+    delay_ms(delay); lcd_send_char(':');
+    delay_ms(delay); lcd_send_char('1');
+    delay_ms(delay); lcd_send_char('6');
+    delay_ms(delay); lcd_send_char('C');
+    delay_ms(delay); lcd_send_char('H');
+    delay_ms(delay); lcd_send_char('A');
+    delay_ms(delay); lcd_shift_display_left();
+    delay_ms(delay); lcd_send_char('R');
     delay_ms(delay); lcd_home();
     delay_ms(delay * 2);
 }

@@ -106,10 +106,13 @@ void lcd_send_command(unsigned char data);
 void lcd_move_cursor_right(int amount);
 void lcd_move_cursor_left(int amount);
 
-void lcd_shift_display_right(int amount);
-void lcd_shift_display_left(int amount);
+void lcd_shift_display_right();
+void lcd_shift_display_left();
 
 void lcd_cg_ram_address_set(char address);
 void lcd_dd_ram_address_set(char address);
+
+void lcd_clear();
+void lcd_home();
 
 #endif // LM16A211_H

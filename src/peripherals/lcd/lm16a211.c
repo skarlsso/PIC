@@ -157,16 +157,12 @@ void lcd_move_cursor_left(int amount) {
 }
 
 
-void lcd_shift_display_right(int amount) {
-    while (amount-- > 0) {
-        lcd_move_cursor_or_shift_display(DISPLAY, RIGHT);
-    }
+void lcd_shift_display_right() {
+    lcd_move_cursor_or_shift_display(DISPLAY, RIGHT);
 }
 
-void lcd_shift_display_left(int amount) {
-    while (amount-- > 0) {
-        lcd_move_cursor_or_shift_display(DISPLAY, LEFT);
-    }
+void lcd_shift_display_left() {
+    lcd_move_cursor_or_shift_display(DISPLAY, LEFT);
 }
 
 
@@ -178,6 +174,13 @@ void lcd_dd_ram_address_set(char address) {
     lcd_send_command(DD_RAM_ADDRESS_SET_BITS(address));
 }
 
+void lcd_clear() {
+    lcd_send_command(DISPLAY_CLEAR_BITS);
+}
+
+void lcd_home() {
+    lcd_send_command(DISPLAY_CURSOR_HOME_BITS);
+}
 
 void lcd_init(void) {
 #ifdef PRE_LCD_INIT

@@ -86,6 +86,11 @@ inline static void compiler_check_for_config_mappings() {
 #define SHIFT_RIGHT_BIT                  0b00000100
 #define SHIFT_LEFT_BIT                   0b00000000
 
+// CG RAM address set
+#define CG_RAM_ADDRESS_SET_BITS(bits) (0b01000000 | (bits & 0b00111111))
+
+// DD RAM address set
+#define DD_RAM_ADDRESS_SET_BITS(bits) (0b10000000 | (bits & 0b01111111))
 
 // Timing characteristics from SHARP LM16A211 data sheet [3] (ns) 
 // ==============================================================
@@ -125,5 +130,8 @@ void lcd_move_cursor_left(int amount);
 
 void lcd_shift_display_right(int amount);
 void lcd_shift_display_left(int amount);
+
+void lcd_cg_ram_address_set(char address);
+void lcd_dd_ram_address_set(char address);
 
 #endif // LM16A211_H

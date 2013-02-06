@@ -158,6 +158,15 @@ void lcd_shift_display_left(int amount) {
 }
 
 
+void lcd_cg_ram_address_set(char address) {
+    lcd_send_command(CG_RAM_ADDRESS_SET_BITS(address));
+}
+
+void lcd_dd_ram_address_set(char address) {
+    lcd_send_command(DD_RAM_ADDRESS_SET_BITS(address));
+}
+
+
 void lcd_init(void) {
 #ifdef PRE_LCD_INIT
     PRE_LCD_INIT;

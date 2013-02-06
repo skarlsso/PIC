@@ -3,6 +3,29 @@
 #include "delayer.h"
 #include "led_debug.h"
 
+// Timing characteristics from SHARP LM16A211 data sheet [3] (ns) 
+// ==============================================================
+// Enable cycle time
+#define LCD_tcycE      1000
+// Enable pulse width
+#define LCD_PWEH        450
+// Enable rise time (min)
+#define LCD_tEr          25
+// Enable fall time (min)
+#define LCD_tEf          25
+// RS,R/W setup time
+#define LCD_tAS         140
+// Address hold time
+#define LCD_tAH          10
+// Data setup time
+#define LCD_tDSW        195
+// Data delay time (min)
+#define LCD_tDDR        320
+// Data hold time (write)
+#define LCD_tH           10
+// Data hold time (read)
+#define LCD_tDHR         20
+
 // Add extra delay if delay functions are off.
 #define DELAY_OFFSET 0L
 
@@ -89,6 +112,10 @@ void lcd_send_command(unsigned char data) {
 }
 
 
+void lcd_send_char(unsigned char c) {
+    lcd_send8(c, DATA);
+}
+
 void lcd_send_str(const char* str) {
     int i;
     
@@ -103,13 +130,6 @@ void lcd_send_str(const char* str) {
         lcd_send_char(c);
     }
 }
-
-// High-level functions
-
-void lcd_send_char(unsigned char c) {
-    lcd_send8(c, DATA);
-}
-
 
 #define RIGHT 0
 #define LEFT  1

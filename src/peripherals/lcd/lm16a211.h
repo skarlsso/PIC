@@ -1,5 +1,5 @@
 // Code to drive the LM16A211 5x7-dot 16-character 2-line dot-matrix LCD panel.
-
+//
 // Reference Material
 // ==================
 //  [0] http://www.epemag.wimborne.co.uk/lcd1.pdf
@@ -92,28 +92,6 @@ inline static void compiler_check_for_config_mappings() {
 // DD RAM address set
 #define DD_RAM_ADDRESS_SET_BITS(bits) (0b10000000 | (bits & 0b01111111))
 
-// Timing characteristics from SHARP LM16A211 data sheet [3] (ns) 
-// ==============================================================
-// Enable cycle time
-#define LCD_tcycE      1000
-// Enable pulse width
-#define LCD_PWEH        450
-// Enable rise time (min)
-#define LCD_tEr          25
-// Enable fall time (min)
-#define LCD_tEf          25
-// RS,R/W setup time
-#define LCD_tAS         140
-// Address hold time
-#define LCD_tAH          10
-// Data setup time
-#define LCD_tDSW        195
-// Data delay time (min)
-#define LCD_tDDR        320
-// Data hold time (write)
-#define LCD_tH           10
-// Data hold time (read)
-#define LCD_tDHR         20
 
 // Public functions
 // ================

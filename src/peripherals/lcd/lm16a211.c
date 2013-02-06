@@ -3,10 +3,6 @@
 #include "delayer.h"
 #include "led_debug.h"
 
-// FIXME: Hard coded
-#include <libpic30.h>
-#include <p30f2011.h>
-
 #define LCD_CTRL_RS_CHARACTER 1
 #define LCD_CTRL_RS_COMMAND   0
 #define LCD_CTRL_RW_WRITE     0
@@ -32,16 +28,6 @@
 #define lcd_set_write_command()    lcd_set_mode(LCD_CTRL_RS_COMMAND,   LCD_CTRL_RW_WRITE)
 #define lcd_set_read_command()     lcd_set_mode(LCD_CTRL_RS_COMMAND,   LCD_CTRL_RW_READ)
 
-static void set_data_pins_as_input() {
-    // FIXME: Assumes data pins are RB0-RB3
-    TRISB = 0b1111111100111111;
-}
-
-static void set_data_pins_as_output() {
-    // FIXME: Assumes data pins are RB0-RB3
-    TRISB = 0b1111111100110000;
-}
-
 #define DONT_USE_RW_PIN 0
 static void lcd_wait_busy() {
 #if DONT_USE_RW_PIN
@@ -54,7 +40,7 @@ static void lcd_wait_busy() {
     int stored_RS = LCD_RS;
     int stored_RW = LCD_RW;
 
-    set_data_pins_as_input();    
+    PREPARE_FOR_READ_FROM_LCD;
     
     lcd_set_read_command();
     
@@ -65,21 +51,21 @@ static void lcd_wait_busy() {
         LCD_E = 1;
         // Wait for data to become available
         delay_ns_with_offset(DELAY_OFFSET, LCD_tEr + LCD_PWEH);
-        busy = PORTBbits.RB3; // FIXME: Hardcoded
+        busy = LCD_D7_WHEN_READABLE;
         LCD_E = 0;
         delay_ns_with_offset(DELAY_OFFSET, LCD_tcycE - LCD_tEr - LCD_PWEH);
 
         LCD_E = 1;
         // Wait for data to become available
         delay_ns_with_offset(DELAY_OFFSET, LCD_tEr + LCD_PWEH);
-        ignored = PORTBbits.RB3; // Ignore. FIXME: Hardcoded
+        ignored = LCD_D7_WHEN_READABLE;
         LCD_E = 0;
         delay_ns_with_offset(DELAY_OFFSET, LCD_tcycE - LCD_tEr - LCD_PWEH);
 
         loop_count++;
     }
 
-    set_data_pins_as_output();
+    PREPARE_FOR_WRITE_TO_LCD;
 
     lcd_set_mode(stored_RS, stored_RW);
 }
@@ -173,6 +159,10 @@ void lcd_shift_display_left(int amount) {
 
 
 void lcd_init(void) {
+#ifdef PRE_LCD_INIT
+    PRE_LCD_INIT;
+#endif
+
     // Initial delay > 15ms.
     delay_ns(20UL * 1000UL * 1000UL);
 

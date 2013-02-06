@@ -34,15 +34,24 @@
 #ifndef LM16A211_H
 #define LM16A211_H
 
-// FIXME: Currently hard coded to my wiring of the dsPIC30F2011
-// PIC to LCD pin mapping
-#define LCD_E  _LATB7
-#define LCD_RS _LATB6
-#define LCD_RW _LATC14
-#define LCD_D4 _LATB0
-#define LCD_D5 _LATB1
-#define LCD_D6 _LATB2
-#define LCD_D7 _LATB3
+// User must provide a lm16a211_config.h, PIC pin to LCD pin mapping.
+#include "lm16a211_config.h"
+
+#if !NO_CONFIG_CHECK
+// The function is only here to check that all necessary configs are setup.
+inline static void compiler_check_for_config_mappings() {
+    LCD_RS = 0;
+    LCD_E  = 0;
+    LCD_RW = 0;
+    LCD_D4 = 0;
+    LCD_D5 = 0;
+    LCD_D6 = 0;
+    LCD_D7 = 0;
+    LCD_D7_WHEN_READABLE;
+    PREPARE_FOR_READ_FROM_LCD;
+    PREPARE_FOR_WRITE_TO_LCD;
+}
+#endif
 
 // Instructions Bits
 

@@ -17,33 +17,20 @@ static void init(void) {
     RCONbits_saved = RCONbits;
     RCON = 0;
 
-    // Change to digital pins.
-    //ADPCFG = 0b01101111;
-    ADPCFG = 0b11111111;
-    // TODO: Assumes pin setup.
-
-    // Set as outputs: RB0, RB1, RB2, RB3, RB6, RB7
-    //TRISB = 0b1111111100110000;
-    TRISB = 0b1111111100110000;
-    // Set as outputs: RC13, RC14, RC15 
-    TRISC = 0b0001111111111111;
-
-    // Clear the output bits.
-    LATB = 0;
-    LATC = 0;
-
 #if !NO_DEBUG
     // Have had problems where __delay32 resets with IOPUWR. Show the bit.
     if (RCONbits_saved.IOPUWR) {
-        LATCbits.LATC15 = 1;
+        DEBUG_BIT_1 = 1;
     } else {
-        LATCbits.LATC15 = 0;
+        DEBUG_BIT_1 = 0;
     }
 #endif
 }
 
 int main(void) {
     init();
+
+    // The pin setup has been placed in PRE_LCD_INIT, which is called from lcd_init().
     lcd_init(); 
     
     lcd_send_str("0123456789ABCDEF");

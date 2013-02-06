@@ -9,10 +9,12 @@
 // Turn RB0, RB1, RB2, RB3 into output pins.
 #define PREPARE_FOR_READ_FROM_LCD \
     TRISB = 0b1111111100111111
+    //TRISB |= 0b00001111
 
 // Turn RBO, RB1, RB2, RB3 into input pins.
 #define PREPARE_FOR_WRITE_TO_LCD \
     TRISB = 0b1111111100110000
+    //TRISB &= 0b11110000
 
 // Set RC13 into an input pin.
 // FIXME: RC14, RC15 is hardcoded

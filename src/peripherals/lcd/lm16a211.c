@@ -3,50 +3,35 @@
 #include "delayer.h"
 #include "led_debug.h"
 
-#define LCD_CTRL_RS_CHARACTER 1
-#define LCD_CTRL_RS_COMMAND   0
-#define LCD_CTRL_RW_WRITE     0
-#define LCD_CTRL_RW_READ      1
-
-#define RIGHT 1
-#define LEFT  0
-#define DISPLAY 1
-#define CURSOR  0
-
 // Add extra delay if delay functions are off.
 #define DELAY_OFFSET 0L
 
 // The longest time we have to wait, if we use the busy flag.
 #define MAX_COMMAND_DELAY_IN_MS 10
 
-#define lcd_set_mode(rs, rw) { \
+#define LCD_CTRL_RS_CHARACTER 1
+#define LCD_CTRL_RS_COMMAND   0
+#define LCD_CTRL_RW_WRITE     0
+#define LCD_CTRL_RW_READ      1
+
+#define lcd_set_mode(rs, rw) \
     LCD_RS = rs; \
     LCD_RW = rw; \
-    delay_ns_with_offset(DELAY_OFFSET, LCD_tAS); \
-}
+    delay_ns_with_offset(DELAY_OFFSET, LCD_tAS);
+
 #define lcd_set_write_character()  lcd_set_mode(LCD_CTRL_RS_CHARACTER, LCD_CTRL_RW_WRITE)
 #define lcd_set_write_command()    lcd_set_mode(LCD_CTRL_RS_COMMAND,   LCD_CTRL_RW_WRITE)
 #define lcd_set_read_command()     lcd_set_mode(LCD_CTRL_RS_COMMAND,   LCD_CTRL_RW_READ)
 
-#define DONT_USE_RW_PIN 0
-static void lcd_wait_busy() {
-#if DONT_USE_RW_PIN
-    {
-        delay_ms(MAX_COMMAND_DELAY_IN_MS);
-        return;
-    }
-#endif
-    
-    int stored_RS = LCD_RS;
-    int stored_RW = LCD_RW;
-
+static void lcd_wait_until_not_busy() {
     PREPARE_FOR_READ_FROM_LCD;
-    
+
     lcd_set_read_command();
     
     int busy = 1;
     int loop_count = 0;
     int ignored;
+
     while (busy) {
         LCD_E = 1;
         // Wait for data to become available
@@ -66,8 +51,14 @@ static void lcd_wait_busy() {
     }
 
     PREPARE_FOR_WRITE_TO_LCD;
+}
 
-    lcd_set_mode(stored_RS, stored_RW);
+static void lcd_wait_busy() {
+#if !DONT_USE_RW_PIN
+    lcd_wait_until_not_busy();
+#else
+    delay_ms(MAX_COMMAND_DELAY_IN_MS);
+#endif
 }
 
 static void lcd_send4_no_wait(unsigned char data) {
@@ -123,6 +114,11 @@ void lcd_send_command(char data) {
     lcd_send8(data);
 }
 
+
+#define RIGHT 1
+#define LEFT  0
+#define DISPLAY 1
+#define CURSOR  0
 
 static void lcd_move_cursor_or_shift_display(char display_or_cursor, char right_or_left) {
     int direction = (right_or_left == RIGHT ? SHIFT_RIGHT_BIT : SHIFT_LEFT_BIT);

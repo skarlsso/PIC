@@ -131,6 +131,14 @@ void lcd_send_str(const char* str) {
     }
 }
 
+void lcd_cg_ram_address_set(char address) {
+    lcd_send_command(CG_RAM_ADDRESS_SET_BITS(address));
+}
+
+void lcd_dd_ram_address_set(char address) {
+    lcd_send_command(DD_RAM_ADDRESS_SET_BITS(address));
+}
+
 #define RIGHT 0
 #define LEFT  1
 #define DISPLAY 0
@@ -156,7 +164,6 @@ void lcd_move_cursor_left(int amount) {
     }
 }
 
-
 void lcd_shift_display_right() {
     lcd_move_cursor_or_shift_display(DISPLAY, RIGHT);
 }
@@ -165,14 +172,6 @@ void lcd_shift_display_left() {
     lcd_move_cursor_or_shift_display(DISPLAY, LEFT);
 }
 
-
-void lcd_cg_ram_address_set(char address) {
-    lcd_send_command(CG_RAM_ADDRESS_SET_BITS(address));
-}
-
-void lcd_dd_ram_address_set(char address) {
-    lcd_send_command(DD_RAM_ADDRESS_SET_BITS(address));
-}
 
 void lcd_clear() {
     lcd_send_command(DISPLAY_CLEAR_BITS);

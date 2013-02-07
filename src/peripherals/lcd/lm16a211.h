@@ -30,6 +30,11 @@
 //       cursor position       cursor position
 //       blinks.               unblinks.
 //
+// Display Addresses (when display not shifted):
+// Row 1: 00H O1H 02H ... ODH OEH OFH (00H-27H)
+// Row w: 40H 41H 42H ... 4DH 4EH 4FH (40H-67H)
+
+
 
 #ifndef LM16A211_H
 #define LM16A211_H
@@ -92,6 +97,12 @@ inline static void compiler_check_for_config_mappings() {
 // DD RAM address set
 #define DD_RAM_ADDRESS_SET_BITS(bits) (0b10000000 | (bits & 0b01111111))
 
+// The address of the user generated char at index.
+#define CG_USER_CHAR_ADDRESS(index) (0b00000000 | index)
+
+// The address of a single row of a user generated char
+#define CG_USER_CHAR_ROW_ADDRESS(index, row) (((index) << 3) | (row))
+
 
 // Public functions
 // ================
@@ -101,6 +112,8 @@ void lcd_init(void);
 
 void lcd_send_str(const char* str);
 void lcd_send_char(unsigned char c);
+
+void lcd_send_data(unsigned char data);
 void lcd_send_command(unsigned char data);
 
 void lcd_move_cursor_right(int amount);
@@ -112,6 +125,9 @@ void lcd_shift_display_left();
 
 void lcd_cg_ram_address_set(char address);
 void lcd_dd_ram_address_set(char address);
+
+void lcd_user_char_set_row(int index, int row, char pattern);
+void lcd_send_user_char(int index);
 
 void lcd_clear();
 void lcd_home();

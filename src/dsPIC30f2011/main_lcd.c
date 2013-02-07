@@ -34,6 +34,7 @@ static void init(void) {
 void example0(void);
 void example1(void);
 void example2(void);
+void example3(void);
 
 int main(void) {
     init();
@@ -46,7 +47,8 @@ int main(void) {
     while (1) {
         //example0();
         //example1();
-        example2();
+        //example2();
+        example3();
     }
 
     return 0;
@@ -137,4 +139,94 @@ void example2(void) {
     delay_ms(delay); lcd_send_char('R');
     delay_ms(delay); lcd_home();
     delay_ms(delay * 2);
+}
+
+// Demo user generated characters.
+void example3(void) {
+    // Characters to be put in CG RAM
+    unsigned char cg_user_data[6][8] = {
+        {
+            0b01010,
+            0b10001,
+            0b01000,
+            0b00100,
+            0b00010,
+            0b10001,
+            0b01010,
+            0b00000
+        },
+        {
+            0b00000,
+            0b10101,
+            0b00000,
+            0b00100,
+            0b00000,
+            0b00100,
+            0b00000,
+            0b00000
+        },
+        {
+            0b00000,
+            0b10101,
+            0b00000,
+            0b10100,
+            0b00000,
+            0b10101,
+            0b00000,
+            0b00000
+        },
+        {
+            0b00000,
+            0b10101,
+            0b00000,
+            0b10100,
+            0b00000,
+            0b10000,
+            0b00000,
+            0b00000
+        },
+        {
+            0b00000,
+            0b00100,
+            0b01010,
+            0b10001,
+            0b01010,
+            0b10001,
+            0b00000,
+            0b00000
+        },
+        {
+            0b00000,
+            0b10001,
+            0b01000,
+            0b10101,
+            0b00010,
+            0b10001,
+            0b00000,
+            0b00000
+        }
+    };
+
+    // Write characters to CG RAM
+    int index, row;
+    for (index = 0; index < 6; index++) {
+        for (row = 0; row < 8; row++) {
+            lcd_user_char_set_row(index, row, cg_user_data[index][row]);
+        }
+    }
+
+    // Must reset cursor after lcd_user_char_set_row,
+    // since the address counter is chared between CG and DD RAM.
+    lcd_home();
+
+    lcd_send_char('<');
+
+    // Use characters written to CG RAM
+    for (index = 0; index < 6; index++) {
+        lcd_send_user_char(index);
+    }
+
+    lcd_send_char('>');
+
+    while (1) {}
 }

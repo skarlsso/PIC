@@ -111,6 +111,9 @@ void lcd_send_command(unsigned char data) {
     lcd_send8(data, COMMAND);
 }
 
+void lcd_send_data(unsigned char c) {
+    lcd_send8(c, DATA);
+}
 
 void lcd_send_char(unsigned char c) {
     lcd_send8(c, DATA);
@@ -137,6 +140,15 @@ void lcd_cg_ram_address_set(char address) {
 
 void lcd_dd_ram_address_set(char address) {
     lcd_send_command(DD_RAM_ADDRESS_SET_BITS(address));
+}
+
+void lcd_send_user_char(int index) {
+    lcd_send8(CG_USER_CHAR_ADDRESS(index), DATA);
+}
+
+void lcd_user_char_set_row(int index, int row, char pattern) {
+    lcd_cg_ram_address_set(CG_USER_CHAR_ROW_ADDRESS(index, row));
+    lcd_send_data(pattern);
 }
 
 void lcd_move_cursor_to_start_of_second_line(void) {

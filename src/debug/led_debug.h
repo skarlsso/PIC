@@ -1,8 +1,9 @@
 #ifndef LED_DEBUG_H
 #define LED_DEBUG_H
 
+#include "xc.h"
+
 // FIXME: Hard coded for now.
-#include <p30F2011.h>
 #define DEBUG_BIT_0 LATCbits.LATC13
 #define DEBUG_BIT_1 LATCbits.LATC15
 

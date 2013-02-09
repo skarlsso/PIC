@@ -1,12 +1,14 @@
+#include "xc.h"
+
 #include "delayer.h"
 #include "led_debug.h"
 
-#include <p30f2011.h> 
-#include <libpic30.h>
-
-_FOSC(CSW_FSCM_OFF & FRC_PLL16); // FCY=29.48MHz & FOSC=16x7.37MHz  
-_FWDT(WDT_OFF);                  // Watchdog timer off 
-_FBORPOR(MCLR_DIS & PWRT_64);    // Disable reset pin & Power-up timer
+// Doc: xc16/v1.11/docs/config_docs/30F2011.html
+#pragma config FCKSMEN=CSW_FSCM_OFF /* Clock switching and monitor off */
+#pragma config FOSFPR=FRC_PLL16     /* FCY=29.48MHz & FOSC=16x7.37MHz */
+#pragma config WDT=WDT_OFF          /* Wathdog timer off */
+#pragma config MCLRE=MCLR_DIS       /* Disable reset pin */
+#pragma config FPWRT=PWRT_16        /* Power-up timer */
 
 #include "lm16a211.h"
 

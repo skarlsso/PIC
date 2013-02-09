@@ -1,10 +1,10 @@
-#ifndef LM16A211_CONFIG_H
-#define LM16A211_CONFIG_H
-
 // Example config file, based on my current setup
 // ==============================================
 
-#include <p30F2011.h>
+#ifndef LM16A211_CONFIG_H
+#define LM16A211_CONFIG_H
+
+#include "xc.h"
 
 // Turn RB0, RB1, RB2, RB3 into output pins.
 #define PREPARE_FOR_READ_FROM_LCD \

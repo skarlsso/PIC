@@ -9,8 +9,7 @@
 # error "This file assumes FCY == 29840000"
 #endif
 
-#include <libpic30.h>
-#include <p30f2011.h>
+#include "xc.h"
 
 // __delay32() gives unsatble behavior and sets RCONbits.IOPUWR,
 // so provide some inaccurate delay functions instead.

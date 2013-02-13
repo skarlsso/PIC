@@ -16,9 +16,14 @@
 
 #define PRE_LCD_INIT \
     /* Set input/output pins. */ \
-    TRISB = 0b00110000; \
-    /* Set RC14 into an input pin. */ \
-    TRISCbits.TRISC14 = 0; \
+    TRISBbits.TRISB0 = 0; \
+    TRISBbits.TRISB1 = 0; \
+    TRISBbits.TRISB2 = 0; \
+    TRISBbits.TRISB3 = 0; \
+    TRISBbits.TRISB6 = 0; \
+    TRISBbits.TRISB7 = 0; \
+    /* Set RC15 into an input pin. */ \
+    TRISCbits.TRISC15 = 0; \
     /* Clear the output bits. */ \
     LATB = 0; \
     LATC = 0; \
@@ -28,7 +33,7 @@
 // PIC Output pins to the LCD, available after PREPARE_FOR_WRITE_TO_LCD.
 #define LCD_E  LATBbits.LATB7
 #define LCD_RS LATBbits.LATB6
-#define LCD_RW LATCbits.LATC14
+#define LCD_RW LATCbits.LATC15
 #define LCD_D4 LATBbits.LATB0
 #define LCD_D5 LATBbits.LATB1
 #define LCD_D6 LATBbits.LATB2

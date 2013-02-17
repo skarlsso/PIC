@@ -9,6 +9,8 @@
 
 // Current implementation waits in spin loops.
 // TODO: Add support for interrupt based waits.
+// TODO: Add some error handling. The current implementation
+//       hangs if the slaves don't answer as expected.
 
 void i2c_start_and_wait() {
     StartI2C();

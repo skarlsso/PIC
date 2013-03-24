@@ -1,1 +1,1 @@
-Code for Microchip PIC microprocessors.
+Code for Microchip PIC microcontrollers.

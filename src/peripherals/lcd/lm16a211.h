@@ -1,5 +1,7 @@
 // Code to drive the LM16A211 5x7-dot 16-character 2-line dot-matrix LCD panel.
 //
+// This display uses the Hitachi HD44780 LCD controller.
+//
 // Reference Material
 // ==================
 //  [0] http://www.epemag.wimborne.co.uk/lcd1.pdf

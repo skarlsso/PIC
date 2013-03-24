@@ -5,12 +5,12 @@
 
 // FIXME: Hard coded for now.
 #define DEBUG_BIT_0 LATCbits.LATC13
-#define DEBUG_BIT_1 LATCbits.LATC15
+#define DEBUG_BIT_1 LATCbits.LATC14
 
 inline static void debug_init(void) {
     // Set to output pins.
     TRISCbits.TRISC13 = 0;
-    TRISCbits.TRISC15 = 0;
+    TRISCbits.TRISC14 = 0;
 }
 
 // Hang and blink a led.

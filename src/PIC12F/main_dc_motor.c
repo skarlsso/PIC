@@ -1,14 +1,20 @@
-// Control a H-Bridge connected to a DC motor from a PIC
+// Control a DC motor connected to a H-Bridge with a PIC
 // =====================================================
 
 // Done:
 //  Step 1: Get PWM module to output a PWM signal.
 //  Step 2: Use the ADC module to read the voltage comming out of a potentiometer.
 //  Step 3: Control the duty cycle of the PWM with the input from the potentiometer.
-//
-// TODO:
 //  Step 4: Use the PWM signal to control the speed of the motor connected to the H-Bridge.
 //  Step 5: Make it possible to go both forward and backwards by splitting the ADC input into two parts.
+
+// Reference:
+//   http://www.mcmanis.com/chuck/robotics/tutorial/h-bridge/bjt-circuit.html
+//     I built and used the H-Bridge circuit described on the page.
+//     NOTE: Don't disconect any of the FWD and REV pins. That will cause
+//           the two opto ouplers on one side of the H-Bridge to turn on the
+//           BJTs and current will surge through and potentially break your
+//           components.
 
 // PIC12LF1822 Configuration Bit Settings
 
@@ -45,6 +51,19 @@
 // TAD (ADC period) == 1 us with 32 MHz and ADC Clock Selection Fosc/32
 #define delay_10_5_TADs() delay_10us(); _nop(); _nop(); _nop(); _nop(); _nop(); _nop();
 
+#define FORWARD_PIN LATAbits.LATA0
+#define REVERSE_PIN LATAbits.LATA1
+
+void go_forward() {
+    FORWARD_PIN = 1;
+    REVERSE_PIN = 0;
+}
+
+void go_reverse() {
+    FORWARD_PIN = 0;
+    REVERSE_PIN = 1;
+}
+
 int main(void) {
 
     // === Clock ===
@@ -54,6 +73,18 @@ int main(void) {
     OSCCONbits.IRCF   = 0b1110; // 8 MHz
     OSCCONbits.SCS    =   0b00; // Use config bits above
     // OSCCONbits.SPLLEN = 0b1; // PLL x4, set in config bits above
+
+
+    // === Pins ===
+
+    // Forward pin
+    TRISA0 = 0; // Output
+    ANSA1  = 0; // Digital
+
+    // Reverse pin
+    TRISA1 = 0; // Output
+
+    // TRISA2 - Enable/PWM pin is set below when PWM is setup.
 
 
     // === PWM ===
@@ -100,8 +131,8 @@ int main(void) {
     // Use RA2 as CPP1.
     APFCONbits.CCP1SEL = 0;
  
-    // Setup PWM mode - PWM mode: P1A, P1C active-high; P1B, P1D active-high
-    CCP1CONbits.CCP1M = 0b1100;
+    // Setup PWM mode - active low
+    CCP1CONbits.CCP1M = 0b1111;
 
     // Clear timer interrupt flag.
     PIR1bits.TMR2IF = 0;
@@ -147,21 +178,52 @@ int main(void) {
         unsigned char adc_high = ADRESH;      // Bits 9:2
         unsigned char adc_low  = ADRESL >> 6; // Bits 1:0
 
-        // Set the values to min and max when near the ADC limits. To make sure
-        // we reach 0% and 100% duty cycle.
-#define EPSILON 1
-        if (adc_high < EPSILON) {
-            adc_high = 0;
-            adc_low  = 0;
-        } else if (adc_high > PR2 - EPSILON) {
-            // Can only get 100% duty cycle if PR2 is less than the max value.
-            adc_high = (PR2 < 0xFF) ? (PR2 + 1) : 0xFF;
-            adc_low  = 0b11;
+        // ADC value determins speed and direction.
+        //    0: Max forward
+        //  511: Min forward
+        //  512: Zero point
+        //  513: Min reverse
+        // 1023: Max reverse
+
+        // TODO: Add some dead band values around the Zero point.
+
+
+        // Setup the PWM duty cycle
+
+        unsigned char pwm_high;
+        unsigned char pwm_low;
+
+        if (adc_high < 0x80) {
+            go_forward();
+            // Use 9 bits of the ADC value, but invert it.
+            pwm_high = 0x7F - adc_high;
+            pwm_low  = 0b11 - adc_low;
+        } else {
+            go_reverse();
+            // Use only the lower bits.
+            pwm_high = adc_high & 0x7F;
+            pwm_low  = adc_low;
         }
 
-        // Move the 10 bit ADC value into the 10 bit PWM duty cycle registers.
-        CCPR1L = adc_high;
-        DC1B1  = adc_low;
+        // Shift to make it a 10 bit value.
+        pwm_high = pwm_high << 1;
+        pwm_low  = (pwm_low << 1) & 0b11;
+
+        // Set the values to min and max when near the limits.
+        // To make sure we reach 0% and 100% duty cycle.
+#define EPSILON 1
+        if (pwm_high < EPSILON) {
+            pwm_high = 0;
+            pwm_low  = 0;
+        } else if (pwm_high > PR2 - EPSILON) {
+            // Can only get 100% duty cycle if PR2 is less than the max value.
+            pwm_high = (PR2 < 0xFF) ? (PR2 + 1) : 0xFF;
+            pwm_low  = 0b11;
+        }
+
+        // Set the PWM duty cycle registers.
+        CCPR1L = pwm_high;
+        DC1B1  = pwm_low;
     }
 
     return 0;

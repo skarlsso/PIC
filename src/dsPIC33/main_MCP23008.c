@@ -1,6 +1,5 @@
-
-// Setup UART so that printf sends to the serial port
-// ==================================================
+// Example code to use the MCP23008 I2C I/O port extender
+// ======================================================
 
 #include "xc.h"
 

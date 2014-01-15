@@ -1,12 +1,6 @@
 // Setup UART so that printf sends to the serial port
 // ==================================================
 
-#include "xc.h"
-
-#include "delayer.h"
-
-#include <stdio.h>
-
 // DSPIC33FJ128MC802 Configuration Bit Settings
 
 #include <xc.h>
@@ -51,6 +45,12 @@
 // FICD
 #pragma config ICS = PGD1               // Comm Channel Select (Communicate on PGC1/EMUC1 and PGD1/EMUD1)
 #pragma config JTAGEN = OFF             // JTAG Port Enable (JTAG is Disabled)
+
+
+#include "time/delayer.h"
+
+#include <stdio.h>
+
 
 int main(void) {
     // Timing for Internal FRC /w PPL

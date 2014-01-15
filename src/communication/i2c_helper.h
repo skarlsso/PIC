@@ -14,6 +14,7 @@
 #define MasterWriteI2C_ MasterWriteI2C
 #define MasterReadI2C_  MasterReadI2C
 #define AckI2C_         AckI2C
+#define NotAckI2C_      NotAckI2C
 #define MI2CIF_         _MI2CIF
 #define I2CCONbits_     I2CCONbits
 #define I2C1STATbits_   I2CSTATbits
@@ -24,9 +25,10 @@
 #define MasterWriteI2C_ MasterWriteI2C1
 #define MasterReadI2C_  MasterReadI2C1
 #define AckI2C_         AckI2C1
+#define NotAckI2C_      NotAckI2C1
 #define MI2CIF_         _MI2C1IF
-#define I2CCONbits_    I2C1CONbits
-#define I2CSTATbits_   I2C1STATbits
+#define I2CCONbits_     I2C1CONbits
+#define I2CSTATbits_    I2C1STATbits
 #endif
 
 // Current implementation waits in spin loops.
@@ -92,9 +94,13 @@ void i2c_write_and_wait(unsigned char value) {
     while (I2CSTATbits_.ACKSTAT);
 }
 
-unsigned char i2c_read_and_wait(void) {
+unsigned char i2c_read_and_wait(int last_byte) {
     unsigned char c = MasterReadI2C_();
-    AckI2C_();
+    if (last_byte) {
+        NotAckI2C_();
+    } else {
+        AckI2C_();
+    }
     while (I2CCONbits_.ACKEN);
 
     while (!MI2CIF_);

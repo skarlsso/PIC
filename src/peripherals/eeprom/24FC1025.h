@@ -55,7 +55,7 @@ void eeprom_24FC1025_read(char chip_select, char block, unsigned int address, ch
     int i;
     for (i = 0; i < length; i++) {
         // Read sequential data.
-        data[i] = i2c_read_and_wait();
+        data[i] = i2c_read_and_wait(i == length - 1);
     }
 
     // End the data read.

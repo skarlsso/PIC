@@ -211,7 +211,7 @@ void read_bytes_from_nunchuck(unsigned char bytes[NUNCHUCK_READ_BYTES]) {
     i2c_start_and_wait();
     i2c_write_and_wait(0xA5);
     for (i = 0; i < NUNCHUCK_READ_BYTES; i++) {
-        bytes[i] = i2c_read_and_wait();
+        bytes[i] = i2c_read_and_wait(i == NUNCHUCK_READ_BYTES - 1);
     }
     // Wait to prevent bus collision stat. 1ms didn't work.
     delay_ms(10);

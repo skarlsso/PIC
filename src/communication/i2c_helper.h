@@ -1,9 +1,9 @@
 // Helper functions to communicate over I2C.
 
 #ifndef I2C_HELPER_H
-#define	I2C_HELPER_H
+#define I2C_HELPER_H
 
-#include "xc.h"
+#include <xc.h>
 
 #include <i2c.h>
 
@@ -33,8 +33,6 @@
 
 // Current implementation waits in spin loops.
 // TODO: Add support for interrupt based waits.
-// TODO: Add some error handling. The current implementation
-//       hangs if the slaves don't answer as expected.
 
 #ifndef I2C_ERROR
 #define I2C_ERROR(message)

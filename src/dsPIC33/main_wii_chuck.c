@@ -65,11 +65,11 @@
 #pragma config JTAGEN = OFF             // JTAG Port Enable (JTAG is Disabled)
 
 
+#include "debug/led_debug.h"
+
 // Hard-coded Fcy. See calculation below.
 #define FCY 29840000
-#include "delayer.h"
-
-#include "led_debug.h"
+#include "time/delayer.h"
 
 #include <stdio.h>
 
@@ -78,7 +78,7 @@
 #define I2C_ERROR(message) \
     printf(message);       \
     fflush(stdout);        \
-    debug_blink(DEBUG_BIT_0, 500, 500)
+    pulse_forever(LATAbits.LATA0, 500, 500)
 
 #include "i2c_helper.h"
 
@@ -326,7 +326,6 @@ void print_nunchuck(Nunchuck* this) {
 }
 
 int main(void) {
-    debug_init();
     init_fcy();
     init_pins();
     init_uart();

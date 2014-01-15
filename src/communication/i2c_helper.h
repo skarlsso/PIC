@@ -76,7 +76,7 @@ void i2c_stop_and_wait() {
 void i2c_write_and_wait_no_ack(unsigned char value) {
     char ret = MasterWriteI2C_(value);
     if (ret == -1) {
-        debug_blink(0, 2000, 500);
+        I2C_ERROR("MasterWriteI2C failed\n");
     }
     while (I2CSTATbits_.TBF);
     while (!MI2CIF_);

@@ -6,10 +6,10 @@
 // PPL = 16                  // 
 // FCY = (FOCS * PLL) / 4   // 4 clocks per instruction
 #if !(FCY == 29840000)
-# error "This file assumes FCY == 29840000"
+# warning "This file assumes FCY == 29840000"
 #endif
 
-#include "xc.h"
+#include <xc.h>
 
 // __delay32() gives unsatble behavior and sets RCONbits.IOPUWR,
 // so provide some inaccurate delay functions instead.
@@ -48,5 +48,10 @@ inline static void delay_ms(unsigned long millis) {
         }
     }
 }
+
+// 30MHz => 1 instruction 100/3 ns
+// 30 * (100/3 ns) = 1000 ns = 1 us
+#define delay_us()    asm("repeat #%0" :: "i"(30)); Nop()
+#define delay_100us() asm("repeat #%0" :: "i"(3000)); Nop()
 
 #endif // DELAYER_H

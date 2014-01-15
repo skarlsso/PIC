@@ -1,7 +1,4 @@
-#include "xc.h"
-
-#include "delayer.h"
-#include "led_debug.h"
+#include <xc.h>
 
 // Doc: xc16/v1.11/docs/config_docs/30F2011.html
 #pragma config FCKSMEN=CSW_FSCM_OFF /* Clock switching and monitor off */
@@ -10,7 +7,11 @@
 #pragma config MCLRE=MCLR_DIS       /* Disable reset pin */
 #pragma config FPWRT=PWRT_16        /* Power-up timer */
 
-#include "lm16a211.h"
+#include "dsPIC30f2011/lm16a211_config.h"
+
+#include "peripherals/lcd/lm16a211.h"
+#include "debug/led_debug.h"
+#include "time/delayer.h"
 
 static struct tagRCONBITS RCONbits_saved;
 

@@ -1,17 +1,6 @@
 // Example code to use the MCP23008 I2C I/O port extender
 // ======================================================
 
-#include "xc.h"
-
-// Needed to provide FCY to delayer.h
-#define FCY 29840000
-#include "delayer.h"
-
-#include "led_debug.h"
-#include "i2c_helper.h"
-
-#include <stdio.h>
-
 // DSPIC33FJ128MC802 Configuration Bit Settings
 
 #include <xc.h>
@@ -56,6 +45,17 @@
 // FICD
 #pragma config ICS = PGD1               // Comm Channel Select (Communicate on PGC1/EMUC1 and PGD1/EMUD1)
 #pragma config JTAGEN = OFF             // JTAG Port Enable (JTAG is Disabled)
+
+
+// Needed to provide FCY to delayer.h
+#define FCY 29840000
+
+#include "communication/i2c_helper.h"
+#include "debug/led_debug.h"
+#include "time/delayer.h"
+
+#include <stdio.h>
+
 
 void init_pins(void);
 void init_uart(void);

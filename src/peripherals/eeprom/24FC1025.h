@@ -1,7 +1,7 @@
 #ifndef _24FC1025_H
 #define _24FC1025_H
 
-#include "i2c_helper.h"
+#include "communication/i2c_helper.h"
 
 #define HIGH_BYTE(address) ((unsigned char)((address) >> 8))
 #define LOW_BYTE(address)  ((unsigned char)((address) & 0xFF))

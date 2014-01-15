@@ -41,8 +41,7 @@
 #ifndef LM16A211_H
 #define LM16A211_H
 
-// User must provide a lm16a211_config.h, PIC pin to LCD pin mapping.
-#include "lm16a211_config.h"
+// User must provide PIC pin to LCD pin mappings.
 
 #if !NO_CONFIG_CHECK
 // The function is only here to check that all necessary configs are setup.

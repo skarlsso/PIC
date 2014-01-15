@@ -65,14 +65,8 @@
 #pragma config JTAGEN = OFF             // JTAG Port Enable (JTAG is Disabled)
 
 
-#include "debug/led_debug.h"
-
 // Hard-coded Fcy. See calculation below.
 #define FCY 29840000
-#include "time/delayer.h"
-
-#include <stdio.h>
-
 
 // Setup (optional) I2C_ERROR before including i2c_helper.h
 #define I2C_ERROR(message) \
@@ -80,8 +74,11 @@
     fflush(stdout);        \
     pulse_forever(LATAbits.LATA0, 500, 500)
 
-#include "i2c_helper.h"
+#include "communication/i2c_helper.h"
+#include "debug/led_debug.h"
+#include "time/delayer.h"
 
+#include <stdio.h>
 
 // This buffer is used to dump the data from the Nunchuk.
 #define NUNCHUCK_READ_BYTES 6

@@ -1,6 +1,8 @@
 #ifndef DELAYER_H
 #define DELAYER_H
 
+#include <xc.h>
+
 // FIXME: Hard coded for dsPIC30F2011 with _FOSC(CSW_FSCM_OFF & FRC_PLL16)
 // FOCS = 7.37 MHZ           // FRC - Fast Internal RC Oscillator 
 // PPL = 16                  // 
@@ -9,7 +11,6 @@
 # warning "This file assumes FCY == 29840000"
 #endif
 
-#include <xc.h>
 
 // __delay32() gives unsatble behavior and sets RCONbits.IOPUWR,
 // so provide some inaccurate delay functions instead.

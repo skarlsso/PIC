@@ -6,15 +6,6 @@
 // http://www.mikrocontroller.net/attachment/180459/WS2812B_preliminary.pdf
 //   WS2812B data sheet
 
-#include "xc.h"
-
-#define FCY 29840000
-#include "delayer.h"
-#include "led_debug.h"
-#include "i2c_helper.h"
-
-#include <stdio.h>
-
 // DSPIC33FJ128MC802 Configuration Bit Settings
 
 #include <xc.h>
@@ -59,6 +50,13 @@
 // FICD
 #pragma config ICS = PGD1               // Comm Channel Select (Communicate on PGC1/EMUC1 and PGD1/EMUD1)
 #pragma config JTAGEN = OFF             // JTAG Port Enable (JTAG is Disabled)
+
+
+#define FCY 29840000
+
+#include "communication/i2c_helper.h"
+#include "debug/led_debug.h"
+#include "time/delayer.h"
 
 void init_fcy(void) {
     // Timing for Internal FRC /w PPL

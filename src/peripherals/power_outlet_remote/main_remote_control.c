@@ -1,13 +1,8 @@
 // Control a power outlet wireless remote control.
-// The commands where decoded by main_remote_control_capture.c
-// ===========================================================
+// The commands were decoded by main_remote_control_capture.c
+// ==========================================================
 
-#include "xc.h"
-
-#include "delayer.h"
-#include "led_debug.h"
-
-#include <stdio.h>
+#include <xc.h>
 
 // Doc: xc16/v1.11/docs/config_docs/30F2011.html
 #pragma config FCKSMEN=CSW_FSCM_OFF /* Clock switching and monitor off */
@@ -15,6 +10,13 @@
 #pragma config WDT=WDT_OFF          /* Wathdog timer off */
 #pragma config MCLRE=MCLR_DIS       /* Disable reset pin */
 #pragma config FPWRT=PWRT_16        /* Power-up timer */
+
+
+#include "debug/led_debug.h"
+#include "time/delayer.h"
+
+#include <stdio.h>
+
 
 // Reverse engineered commands
 // ===========================

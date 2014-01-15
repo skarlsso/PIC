@@ -1,11 +1,7 @@
 // Example code for simple Pulse Width Modulation (PWM)
 // ====================================================
 
-#include "xc.h"
-
-#include "delayer.h"
-#include "lm16a211.h"
-#include "led_debug.h"
+#include <xc.h>
 
 // Doc: xc16/v1.11/docs/config_docs/30F2011.html
 #pragma config FCKSMEN=CSW_FSCM_OFF /* Clock switching and monitor off */
@@ -13,6 +9,8 @@
 #pragma config WDT=WDT_OFF          /* Wathdog timer off */
 #pragma config MCLRE=MCLR_DIS       /* Disable reset pin */
 #pragma config FPWRT=PWRT_16        /* Power-up timer */
+
+#include "time/delayer.h"
 
 int main(void) {
     debug_init();

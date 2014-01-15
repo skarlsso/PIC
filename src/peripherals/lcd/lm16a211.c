@@ -1,7 +1,7 @@
 #include "lm16a211.h"
 
-#include "delayer.h"
-#include "led_debug.h"
+#include "debug/led_debug.h"
+#include "time/delayer.h"
 
 // Timing characteristics from SHARP LM16A211 data sheet [3] (ns) 
 // ==============================================================

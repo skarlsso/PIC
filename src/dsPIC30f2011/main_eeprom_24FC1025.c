@@ -1,10 +1,12 @@
-#include "xc.h"
+#include <xc.h>
 
-#include "delayer.h"
-#include "lm16a211.h"
-#include "led_debug.h"
-#include "24FC1025.h"
-#include "i2c_helper.h"
+#include "dsPIC30f2011/lm16a211_config.h"
+
+#include "communication/i2c_helper.h"
+#include "debug/led_debug.h"
+#include "peripherals/eeprom/24FC1025.h"
+#include "peripherals/lcd/lm16a211.h"
+#include "time/delayer.h"
 
 #include <stdio.h>
 #include <string.h>

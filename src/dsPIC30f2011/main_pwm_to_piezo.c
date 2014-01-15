@@ -2,11 +2,7 @@
 // piezo element with Pulse Width Modulation (PWM)
 // ===============================================
 
-#include "xc.h"
-
-#include "delayer.h"
-#include "lm16a211.h"
-#include "led_debug.h"
+#include <xc.h>
 
 // Doc: xc16/v1.11/docs/config_docs/30F2011.html
 #pragma config FCKSMEN=CSW_FSCM_OFF /* Clock switching and monitor off */
@@ -14,6 +10,9 @@
 #pragma config WDT=WDT_OFF          /* Wathdog timer off */
 #pragma config MCLRE=MCLR_DIS       /* Disable reset pin */
 #pragma config FPWRT=PWRT_16        /* Power-up timer */
+
+#include "debug/led_debug.h"
+#include "time/delayer.h"
 
 // Frequencey C: 523.25 ~ 220
 #define C 220

@@ -2,8 +2,7 @@
 #define	WII_NUNCHUCK_H
 
 #include "communication/i2c_helper.h"
-// TODO: Move delayer.h
-#include "dsPIC30f2011/delayer.h"
+#include "time/delayer.h"
 
 #define NUNCHUCK_READ_BYTES 6
 

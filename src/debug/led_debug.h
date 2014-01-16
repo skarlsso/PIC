@@ -19,5 +19,9 @@
 #define pulse_forever(LAT, on_ms, off_ms) \
     pulse_forever2(LAT, on_ms, off_ms, 0)
 
+#define LED_ASSERT(cond, PIN, on_ms, off_ms)   \
+    if (!(cond)) {                             \
+        pulse_forever2(PIN, on_ms, off_ms, 1); \
+    }
 
 #endif // LED_DEBUG_H

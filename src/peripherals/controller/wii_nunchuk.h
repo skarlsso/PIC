@@ -1,24 +1,24 @@
-#ifndef WII_NUNCHUCK_H
-#define	WII_NUNCHUCK_H
+#ifndef WII_NUNCHUK_H
+#define	WII_NUNCHUK_H
 
 #include "communication/i2c_helper.h"
 #include "time/delayer.h"
 
-#define NUNCHUCK_READ_BYTES 6
+#define NUNCHUK_READ_BYTES 6
 
-void read_bytes_from_nunchuck(unsigned char bytes[NUNCHUCK_READ_BYTES]) {
+void read_bytes_from_nunchuk(unsigned char bytes[NUNCHUK_READ_BYTES]) {
     int i;
 
     i2c_start_and_wait();
     i2c_write_and_wait(0xA5);
-    for (i = 0; i < NUNCHUCK_READ_BYTES; i++) {
-        bytes[i] = i2c_read_and_wait(i == NUNCHUCK_READ_BYTES - 1);
+    for (i = 0; i < NUNCHUK_READ_BYTES; i++) {
+        bytes[i] = i2c_read_and_wait(i == NUNCHUK_READ_BYTES - 1);
     }
     i2c_stop_and_wait();
 }
 
-void init_nunchuck(unsigned char data[NUNCHUCK_READ_BYTES]) {
-    // Init nunchuck
+void init_nunchuk(unsigned char data[NUNCHUK_READ_BYTES]) {
+    // Init nunchuk
     i2c_start_and_wait();
     i2c_write_and_wait(0xA4);
     i2c_write_and_wait(0xF0);
@@ -36,13 +36,13 @@ void init_nunchuck(unsigned char data[NUNCHUCK_READ_BYTES]) {
     delay_ms(1);
 
     // Read the Device ID
-    read_bytes_from_nunchuck(data);
+    read_bytes_from_nunchuk(data);
 
 #ifdef HAS_UART
     // Print the Device ID
     printf("Device ID: ");
     int i;
-    for (i = 0; i < NUNCHUCK_READ_BYTES; i++) {
+    for (i = 0; i < NUNCHUK_READ_BYTES; i++) {
         printf("%X ", data[i]);
     }
     printf("\n");
@@ -50,7 +50,7 @@ void init_nunchuck(unsigned char data[NUNCHUCK_READ_BYTES]) {
 #endif
 }
 
-typedef struct Nunchuck {
+typedef struct Nunchuk {
     struct {
         unsigned char x;
         unsigned char y;
@@ -65,11 +65,11 @@ typedef struct Nunchuck {
         unsigned char c;
         unsigned char z;
     } buttons;
-} Nunchuck;
+} Nunchuk;
 
 
-Nunchuck bytes_to_nunchuck(unsigned char bytes[NUNCHUCK_READ_BYTES]) {
-    Nunchuck n;
+Nunchuk bytes_to_nunchuk(unsigned char bytes[NUNCHUK_READ_BYTES]) {
+    Nunchuk n;
     n.joystick.x      = bytes[0];
     n.joystick.y      = bytes[1];
     n.accelerometer.x = bytes[2] << 2;
@@ -100,7 +100,7 @@ Nunchuck bytes_to_nunchuck(unsigned char bytes[NUNCHUCK_READ_BYTES]) {
     return n;
 }
 
-Nunchuck read_data_from_nunchuck(unsigned char bytes[NUNCHUCK_READ_BYTES]) {
+Nunchuk read_data_from_nunchuk(unsigned char bytes[NUNCHUK_READ_BYTES]) {
     i2c_start_and_wait();
     i2c_write_and_wait(0xA4);
     i2c_write_and_wait(0x00);
@@ -109,12 +109,12 @@ Nunchuck read_data_from_nunchuck(unsigned char bytes[NUNCHUCK_READ_BYTES]) {
     delay_100us();
     delay_100us();
 
-    read_bytes_from_nunchuck(bytes);
-    return bytes_to_nunchuck(bytes);
+    read_bytes_from_nunchuk(bytes);
+    return bytes_to_nunchuk(bytes);
 }
 
 #ifdef HAS_UART
-void print_nunchuck(Nunchuck* this) {
+void print_nunchuk(Nunchuk* this) {
     printf("joystick X: %3d Y: %3d "
            "accelermoter X: %3d Y: %3d Z: %3d "
            "buttons c: %d z: %d",
@@ -128,27 +128,27 @@ void print_nunchuck(Nunchuck* this) {
 }
 #endif
 
-// === Nunchuck limits ===
+// === Nunchuk limits ===
 
-static const Nunchuck NUNCHUCK_FULL_RESOLUTION_MIN = {
+static const Nunchuk NUNCHUK_FULL_RESOLUTION_MIN = {
     {0, 0},
     {0, 0, 0},
     {0, 0}
 };
 
-static const Nunchuck NUNCHUCK_FULL_RESOLUTION_MAX = {
+static const Nunchuk NUNCHUK_FULL_RESOLUTION_MAX = {
     {255, 255},
     {1023, 1023, 1023},
     {1, 1}
 };
 
-static const Nunchuck NUNCHUCK_HAND_EDITED_MIN = {
+static const Nunchuk NUNCHUK_HAND_EDITED_MIN = {
     {30, 30},
     {300, 300, 300},
     {0, 0}
 };
 
-static const Nunchuck NUNCHUCK_HAND_EDITED_MAX = {
+static const Nunchuk NUNCHUK_HAND_EDITED_MAX = {
     {225, 225},
     {700, 700, 700},
     {1, 1}
@@ -156,13 +156,13 @@ static const Nunchuck NUNCHUCK_HAND_EDITED_MAX = {
 
 // The adaptive limit values will be updated when new limits are seen.
 
-static Nunchuck nunchuck_adaptive_min = {
+static Nunchuk nunchuk_adaptive_min = {
     {127, 127},      // Joystick
     {511, 511, 511}, // Accelerometer
     {0, 0}           // Buttons
 };
 
-static Nunchuck nunchuck_adaptive_max = {
+static Nunchuk nunchuk_adaptive_max = {
     {127, 127},      // Joystick
     {511, 511, 511}, // Accelerometer
     {0, 0}           // Buttons
@@ -172,7 +172,7 @@ static Nunchuck nunchuck_adaptive_max = {
     if (value < variable) {      \
         variable = value;        \
     }
-#define NUNCHUCK_MIN_SET(variable, value)                     \
+#define NUNCHUK_MIN_SET(variable, value)                     \
     MIN_SET(variable.joystick.x,      value->joystick.x);      \
     MIN_SET(variable.joystick.y,      value->joystick.y);      \
     MIN_SET(variable.accelerometer.x, value->accelerometer.x); \
@@ -182,78 +182,78 @@ static Nunchuck nunchuck_adaptive_max = {
     if (value > variable) {      \
         variable = value;        \
     }
-#define NUNCHUCK_MAX_SET(variable, value)                     \
+#define NUNCHUK_MAX_SET(variable, value)                     \
     MAX_SET(variable.joystick.x,      value->joystick.x);      \
     MAX_SET(variable.joystick.y,      value->joystick.y);      \
     MAX_SET(variable.accelerometer.x, value->accelerometer.x); \
     MAX_SET(variable.accelerometer.y, value->accelerometer.y)
 
 
-static void nunchuck_adapt_limits(Nunchuck* nunchuck) {
-    NUNCHUCK_MIN_SET(nunchuck_adaptive_min, nunchuck);
-    NUNCHUCK_MAX_SET(nunchuck_adaptive_max, nunchuck);
+static void nunchuk_adapt_limits(Nunchuk* nunchuk) {
+    NUNCHUK_MIN_SET(nunchuk_adaptive_min, nunchuk);
+    NUNCHUK_MAX_SET(nunchuk_adaptive_max, nunchuk);
 }
 
-#define NUNCHUCK_LIMITS_ADAPTIVE        0
-#define NUNCHUCK_LIMITS_HAND_EDITED     1
-#define NUNCHUCK_LIMITS_FULL_RESOLUTION 2
+#define NUNCHUK_LIMITS_ADAPTIVE        0
+#define NUNCHUK_LIMITS_HAND_EDITED     1
+#define NUNCHUK_LIMITS_FULL_RESOLUTION 2
 
-static unsigned int nunchuck_limits_type = NUNCHUCK_LIMITS_HAND_EDITED;
+static unsigned int nunchuk_limits_type = NUNCHUK_LIMITS_HAND_EDITED;
 
-static int nunchuck_uses_adaptive_limits() {
-    return nunchuck_limits_type == NUNCHUCK_LIMITS_ADAPTIVE;
+static int nunchuk_uses_adaptive_limits() {
+    return nunchuk_limits_type == NUNCHUK_LIMITS_ADAPTIVE;
 }
 
-static Nunchuck const * nunchuck_requested_min() {
-    switch (nunchuck_limits_type) {
-        case NUNCHUCK_LIMITS_ADAPTIVE:
-            return &nunchuck_adaptive_min;
-        case NUNCHUCK_LIMITS_HAND_EDITED:
-            return &NUNCHUCK_HAND_EDITED_MIN;
-        case NUNCHUCK_LIMITS_FULL_RESOLUTION:
+static Nunchuk const * nunchuk_requested_min() {
+    switch (nunchuk_limits_type) {
+        case NUNCHUK_LIMITS_ADAPTIVE:
+            return &nunchuk_adaptive_min;
+        case NUNCHUK_LIMITS_HAND_EDITED:
+            return &NUNCHUK_HAND_EDITED_MIN;
+        case NUNCHUK_LIMITS_FULL_RESOLUTION:
         default:
-            return &NUNCHUCK_FULL_RESOLUTION_MIN;
+            return &NUNCHUK_FULL_RESOLUTION_MIN;
     }
 }
 
-static Nunchuck const * nunchuck_requested_max() {
-    switch (nunchuck_limits_type) {
-        case NUNCHUCK_LIMITS_ADAPTIVE:
-            return &nunchuck_adaptive_max;
-        case NUNCHUCK_LIMITS_HAND_EDITED:
-            return &NUNCHUCK_HAND_EDITED_MAX;
-        case NUNCHUCK_LIMITS_FULL_RESOLUTION:
+static Nunchuk const * nunchuk_requested_max() {
+    switch (nunchuk_limits_type) {
+        case NUNCHUK_LIMITS_ADAPTIVE:
+            return &nunchuk_adaptive_max;
+        case NUNCHUK_LIMITS_HAND_EDITED:
+            return &NUNCHUK_HAND_EDITED_MAX;
+        case NUNCHUK_LIMITS_FULL_RESOLUTION:
         default:
-            return &NUNCHUCK_FULL_RESOLUTION_MAX;
+            return &NUNCHUK_FULL_RESOLUTION_MAX;
     }
 }
 
-// Create a copy of 'nunchuck' that are limited by the current limit strategy.
-static Nunchuck nunchuck_create_limited(Nunchuck* nunchuck) {
+// Create a copy of 'nunchuk' that are limited by the current limit strategy.
+static Nunchuk nunchuk_create_limited(Nunchuk* nunchuk) {
     // Copy values.
-    Nunchuck n = *nunchuck;
+    Nunchuk n = *nunchuk;
 
     // And ensure the values are within the limits.
 
-    Nunchuck const * min = nunchuck_requested_min();
-    NUNCHUCK_MAX_SET(n, min);
+    Nunchuk const * min = nunchuk_requested_min();
+    NUNCHUK_MAX_SET(n, min);
 
-    Nunchuck const * max = nunchuck_requested_max();
-    NUNCHUCK_MIN_SET(n, max);
+    Nunchuk const * max = nunchuk_requested_max();
+    NUNCHUK_MIN_SET(n, max);
 
     return n;
 }
 
-// Create a copy of 'limited_nunchuck', which is limited by the current limit
-// strategy, and scale the values to use the full resolution of the Nunchuck.
-static Nunchuck nunchuck_create_scaled(Nunchuck* limited_nunchuck) {
+// Create a copy of 'limited_nunchuk', which is limited by the current limit
+// strategy, and scale the values to use the full resolution of the Nunchuk.
+static Nunchuk nunchuk_create_scaled(Nunchuk* limited_nunchuk) {
     // Copy values.
-    Nunchuck n = *limited_nunchuck;
+    Nunchuk n = *limited_nunchuk;
 
-    Nunchuck const * min = nunchuck_requested_min();
-    Nunchuck const * max = nunchuck_requested_max();
+    Nunchuk const * min = nunchuk_requested_min();
+    Nunchuk const * max = nunchuk_requested_max();
 
-#define FULL_SPAN(measurement)  (NUNCHUCK_FULL_RESOLUTION_MAX.measurement - NUNCHUCK_FULL_RESOLUTION_MIN.measurement)
+#define FULL_SPAN(measurement)  (NUNCHUK_FULL_RESOLUTION_MAX.measurement - NUNCHUK_FULL_RESOLUTION_MIN.measurement)
 #define LIMIT_SPAN(measurement) (max->measurement - min->measurement)
 #define OFFSET(measurement)     (n.measurement - min->measurement)
 #define SCALED(measurement)     LIMIT_SPAN(measurement) == 0 ? 0 : (unsigned int)((unsigned long) FULL_SPAN(measurement) * OFFSET(measurement) / LIMIT_SPAN(measurement))
@@ -270,5 +270,5 @@ static Nunchuck nunchuck_create_scaled(Nunchuck* limited_nunchuck) {
 
 
 
-#endif // WII_NUNCHUCK_H
+#endif // WII_NUNCHUK_H
 

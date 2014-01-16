@@ -1,4 +1,4 @@
-// Talk I2C with the WII Nunchuk and output the result on the UART
+// Talk I2C with the Wii Nunchuk and output the result on the UART
 // ===============================================================
 
 // References:
@@ -16,7 +16,7 @@
 //   This is the page that a lot of other pages link to.
 //
 
-// NOTE: The interaction with the Nunchuck is very sensitive
+// NOTE: The interaction with the Nunchuk is very sensitive
 //       to the amount of delay between the operations.
 
 // DSPIC33FJ128MC802 Configuration Bit Settings
@@ -81,8 +81,8 @@
 #include <stdio.h>
 
 // This buffer is used to dump the data from the Nunchuk.
-#define NUNCHUCK_READ_BYTES 6
-static unsigned char data[NUNCHUCK_READ_BYTES];
+#define NUNCHUK_READ_BYTES 6
+static unsigned char data[NUNCHUK_READ_BYTES];
 
 // Setup the frequency.
 void init_fcy(void) {
@@ -158,21 +158,21 @@ void init_uart(void) {
     U1STAbits.UTXEN   = 1; // Enable transmit
 }
 
-void read_bytes_from_nunchuck(unsigned char bytes[NUNCHUCK_READ_BYTES]) {
+void read_bytes_from_nunchuk(unsigned char bytes[NUNCHUK_READ_BYTES]) {
     int i;
 
     i2c_start_and_wait();
     i2c_write_and_wait(0xA5);
-    for (i = 0; i < NUNCHUCK_READ_BYTES; i++) {
-        bytes[i] = i2c_read_and_wait(i == NUNCHUCK_READ_BYTES - 1);
+    for (i = 0; i < NUNCHUK_READ_BYTES; i++) {
+        bytes[i] = i2c_read_and_wait(i == NUNCHUK_READ_BYTES - 1);
     }
     // Wait to prevent bus collision stat. 1ms didn't work.
     delay_ms(10);
     i2c_stop_and_wait(2);
 }
 
-void init_nunchuck() {
-    // Init nunchuck
+void init_nunchuk() {
+    // Init nunchuk
     i2c_start_and_wait();
     i2c_write_and_wait(0xA4);
     i2c_write_and_wait(0xF0);
@@ -190,12 +190,12 @@ void init_nunchuck() {
     delay_ms(1);
 
     // Read the Device ID
-    read_bytes_from_nunchuck(data);
+    read_bytes_from_nunchuk(data);
 
     // Print the Device ID
     printf("Device ID: ");
     int i;
-    for (i = 0; i < NUNCHUCK_READ_BYTES; i++) {
+    for (i = 0; i < NUNCHUK_READ_BYTES; i++) {
         printf("%X ", data[i]);
     }
     printf("\n");
@@ -203,7 +203,7 @@ void init_nunchuck() {
 }
 
 
-typedef struct Nunchuck {
+typedef struct Nunchuk {
     struct {
         char x;
         char y;
@@ -218,11 +218,11 @@ typedef struct Nunchuck {
         char c;
         char z;
     } buttons;
-} Nunchuck;
+} Nunchuk;
 
 
-Nunchuck bytes_to_nunchuck(unsigned char bytes[NUNCHUCK_READ_BYTES]) {
-    Nunchuck n;
+Nunchuk bytes_to_nunchuk(unsigned char bytes[NUNCHUK_READ_BYTES]) {
+    Nunchuk n;
     n.joystick.x      = bytes[0];
     n.joystick.y      = bytes[1];
     n.accelerometer.x = bytes[2] << 2;
@@ -253,7 +253,7 @@ Nunchuck bytes_to_nunchuck(unsigned char bytes[NUNCHUCK_READ_BYTES]) {
     return n;
 }
 
-Nunchuck read_data_from_nunchuck(unsigned char bytes[NUNCHUCK_READ_BYTES]) {
+Nunchuk read_data_from_nunchuk(unsigned char bytes[NUNCHUK_READ_BYTES]) {
     i2c_start_and_wait();
     i2c_write_and_wait(0xA4);
     i2c_write_and_wait(0x00);
@@ -261,11 +261,11 @@ Nunchuck read_data_from_nunchuck(unsigned char bytes[NUNCHUCK_READ_BYTES]) {
 
     delay_ms(1);
 
-    read_bytes_from_nunchuck(bytes);
-    return bytes_to_nunchuck(bytes);
+    read_bytes_from_nunchuk(bytes);
+    return bytes_to_nunchuk(bytes);
 }
 
-void print_nunchuck(Nunchuck* this) {
+void print_nunchuk(Nunchuk* this) {
     printf("joystick X: %3d Y: %3d "
            "accelermoter X: %3d Y: %3d Z: %3d "
            "buttons c: %d z: %d",
@@ -287,13 +287,13 @@ int main(void) {
     printf("\n=== main_wii_chuck.c ===\n");
     fflush(stdout);
 
-    init_nunchuck();
+    init_nunchuk();
 
     while (1) {
-        // Request data from nunchuck
-        Nunchuck package = read_data_from_nunchuck(data);
+        // Request data from nunchuk
+        Nunchuk package = read_data_from_nunchuk(data);
         printf("\r");
-        print_nunchuck(&package);
+        print_nunchuk(&package);
 
         delay_ms(10);
     }

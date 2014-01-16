@@ -1,4 +1,4 @@
-// Code to drive a RC Quadcopter, Helicopter, or Car, with a Wii Nunchuck.
+// Code to drive a RC Quadcopter, Helicopter, or Car, with a Wii Nunchuk.
 //
 // The micontroller is connected to a Spektrum DX8 via a trainer cable and
 // outputs a PPM signal, just like a DX6i does in the Slave mode. The DX8
@@ -24,10 +24,10 @@
 // a pull-down resistor. I measured the reistance between GND and PPM to be 6K.
 //
 //
-// Nintendo Wii Nunchuck:
+// Nintendo Wii Nunchuk:
 //
 // After each PPM pulse, the microcontroller uses I2C to read the state of the
-// Nunchuck. Both the joystick and the accelerometer are used to drive RC
+// Nunchuk. Both the joystick and the accelerometer are used to drive RC
 // channels. The buttons are used to turn on the PPM output and to turn on the
 // status indicator.
 //
@@ -35,8 +35,8 @@
 // Status Indicator:
 //
 // The status indicator is a WS2812B RGB LED strip with 16 LEDs. It shows the
-// on/off state of the PPM output and the current values of the Nunchuck. The
-// WS2812B controll sequence are sent after polling the Nunchuck.
+// on/off state of the PPM output and the current values of the Nunchuk. The
+// WS2812B controll sequence are sent after polling the Nunchuk.
 
 
 
@@ -207,14 +207,14 @@ static volatile int current_channel_i = 0;
 // Stop sentinel
 #define STOP_CHANNEL     6
 
-#define NUNCHUCK_TO_CHANNEL_SETUP 1
+#define NUNCHUK_TO_CHANNEL_SETUP 1
 
-#if (NUNCHUCK_TO_CHANNEL_SETUP == 0)
+#if (NUNCHUK_TO_CHANNEL_SETUP == 0)
 #define ACCELEROMETER_X_CHANNEL  RIGHT_X_CHANNEL
 #define ACCELEROMETER_Y_CHANNEL  RIGHT_Y_CHANNEL
 #define JOYSTICK_X_CHANNEL       LEFT_X_CHANNEL
 #define JOYSTICK_Y_CHANNEL       LEFT_Y_CHANNEL
-#elif (NUNCHUCK_TO_CHANNEL_SETUP == 1)
+#elif (NUNCHUK_TO_CHANNEL_SETUP == 1)
 #define ACCELEROMETER_X_CHANNEL  LEFT_X_CHANNEL
 #define ACCELEROMETER_Y_CHANNEL  LEFT_Y_CHANNEL
 #define JOYSTICK_X_CHANNEL       RIGHT_X_CHANNEL
@@ -442,31 +442,31 @@ static void switch_status_indicator() {
     }
 }
 
-static void show_current_status(Nunchuck* nunchuck) {
+static void show_current_status(Nunchuk* nunchuk) {
     switch (current_status_indicator) {
         case STATUS_INDICATOR_ACCELEROMETER_X:
             status_indicator_show_value(blue,
-                    nunchuck->accelerometer.x,
-                    nunchuck_requested_min()->accelerometer.x,
-                    nunchuck_requested_max()->accelerometer.x);
+                    nunchuk->accelerometer.x,
+                    nunchuk_requested_min()->accelerometer.x,
+                    nunchuk_requested_max()->accelerometer.x);
             break;
         case STATUS_INDICATOR_ACCELEROMETER_Y:
             status_indicator_show_value(green,
-                    nunchuck->accelerometer.y,
-                    nunchuck_requested_min()->accelerometer.y,
-                    nunchuck_requested_max()->accelerometer.y);
+                    nunchuk->accelerometer.y,
+                    nunchuk_requested_min()->accelerometer.y,
+                    nunchuk_requested_max()->accelerometer.y);
             break;
         case STATUS_INDICATOR_JOYSTICK_X:
             status_indicator_show_value(red,
-                    nunchuck->joystick.x,
-                    nunchuck_requested_min()->joystick.x,
-                    nunchuck_requested_max()->joystick.x);
+                    nunchuk->joystick.x,
+                    nunchuk_requested_min()->joystick.x,
+                    nunchuk_requested_max()->joystick.x);
            break;
         case STATUS_INDICATOR_JOYSTICK_Y:
             status_indicator_show_value(white,
-                    nunchuck->joystick.y,
-                    nunchuck_requested_min()->joystick.y,
-                    nunchuck_requested_max()->joystick.y);
+                    nunchuk->joystick.y,
+                    nunchuk_requested_min()->joystick.y,
+                    nunchuk_requested_max()->joystick.y);
             break;
         case STATUS_INDICATOR_NONE:
         default:
@@ -484,8 +484,8 @@ static unsigned int  z_button_on_count = 0;
 
 #define BUTTON_PRESSED_COUNT_BEFORE_REGISTERED 4
 
-static int is_button_c_pressed(Nunchuck* nunchuck) {
-    if (nunchuck->buttons.c) {
+static int is_button_c_pressed(Nunchuk* nunchuk) {
+    if (nunchuk->buttons.c) {
         c_button_on_count++;
         if (c_button_on_count == BUTTON_PRESSED_COUNT_BEFORE_REGISTERED) {
             return 1;
@@ -497,8 +497,8 @@ static int is_button_c_pressed(Nunchuck* nunchuck) {
     return 0;
 }
 
-static int is_button_z_pressed(Nunchuck* nunchuck) {
-    if (nunchuck->buttons.z) {
+static int is_button_z_pressed(Nunchuk* nunchuk) {
+    if (nunchuk->buttons.z) {
         z_button_on_count++;
         if (z_button_on_count == BUTTON_PRESSED_COUNT_BEFORE_REGISTERED) {
             return 1;
@@ -513,34 +513,34 @@ static int is_button_z_pressed(Nunchuck* nunchuck) {
 #define SET_CHANNEL_VALUE(CHANNEL, VALUE) \
     channels[CHANNEL].value = (channels[CHANNEL].inverted ? (1023 - (VALUE)) : (VALUE))
 
-static void respond_to_nunchuck(Nunchuck* nunchuck) {
-    if (is_button_c_pressed(nunchuck)) {
+static void respond_to_nunchuk(Nunchuk* nunchuk) {
+    if (is_button_c_pressed(nunchuk)) {
         switch_ppm_on_state();
     }
 
-    if (is_button_z_pressed(nunchuck)) {
+    if (is_button_z_pressed(nunchuk)) {
        switch_status_indicator();
     }
 
-    if (nunchuck_uses_adaptive_limits()) {
-        nunchuck_adapt_limits(nunchuck);
+    if (nunchuk_uses_adaptive_limits()) {
+        nunchuk_adapt_limits(nunchuk);
     }
 
-    // Cap the nunchuck values to the current limit strategy.
-    Nunchuck limited_nunchuck = nunchuck_create_limited(nunchuck);
+    // Cap the nunchuk values to the current limit strategy.
+    Nunchuk limited_nunchuk = nunchuk_create_limited(nunchuk);
 
     // Scale the values to full bit-resolution.
-    Nunchuck scaled_nunchuck  = nunchuck_create_scaled(&limited_nunchuck);
+    Nunchuk scaled_nunchuk  = nunchuk_create_scaled(&limited_nunchuk);
 
     // 8 bits -> 10 bits
-    SET_CHANNEL_VALUE(JOYSTICK_X_CHANNEL, scaled_nunchuck.joystick.x << 2);
-    SET_CHANNEL_VALUE(JOYSTICK_Y_CHANNEL, scaled_nunchuck.joystick.y << 2);
+    SET_CHANNEL_VALUE(JOYSTICK_X_CHANNEL, scaled_nunchuk.joystick.x << 2);
+    SET_CHANNEL_VALUE(JOYSTICK_Y_CHANNEL, scaled_nunchuk.joystick.y << 2);
     // 10 bits -> 10 bits
-    SET_CHANNEL_VALUE(ACCELEROMETER_X_CHANNEL, scaled_nunchuck.accelerometer.x);
-    SET_CHANNEL_VALUE(ACCELEROMETER_Y_CHANNEL, scaled_nunchuck.accelerometer.y);
+    SET_CHANNEL_VALUE(ACCELEROMETER_X_CHANNEL, scaled_nunchuk.accelerometer.x);
+    SET_CHANNEL_VALUE(ACCELEROMETER_Y_CHANNEL, scaled_nunchuk.accelerometer.y);
 
-    // Show the limited Nunchuck values and not the channel values.
-    show_current_status(&limited_nunchuck);
+    // Show the limited Nunchuk values and not the channel values.
+    show_current_status(&limited_nunchuk);
 }
 
 static void check_reset_condition() {
@@ -567,7 +567,7 @@ static void check_reset_condition() {
     }
 }
 
-static volatile int poll_nunchuck = 0;
+static volatile int poll_nunchuk = 0;
 
 int main(void) {
     // Setup clock frequency.
@@ -587,12 +587,12 @@ int main(void) {
     // Initialize the channel values with safe start values.
     init_channels();
 
-    // Setup 100MHz I2C communication with the Nunchuck.
+    // Setup 100MHz I2C communication with the Nunchuk.
     init_i2c(270, TRISBbits.TRISB8, TRISBbits.TRISB9, LATBbits.LATB9);
     
-    // Init the Wii Nunchuck.
-    static unsigned char nunchuck_bytes[NUNCHUCK_READ_BYTES];
-    init_nunchuck(nunchuck_bytes);
+    // Init the Wii Nunchuk.
+    static unsigned char nunchuk_bytes[NUNCHUK_READ_BYTES];
+    init_nunchuk(nunchuk_bytes);
 
     // Init timers last, since this will start running code in ISRs.
     init_timers();
@@ -601,10 +601,10 @@ int main(void) {
 
     while (1) {
         ClrWdt();
-        if (poll_nunchuck) {
-            Nunchuck nunchuck = read_data_from_nunchuck(nunchuck_bytes);
-            respond_to_nunchuck(&nunchuck);
-            poll_nunchuck = 0;
+        if (poll_nunchuk) {
+            Nunchuk nunchuk = read_data_from_nunchuk(nunchuk_bytes);
+            respond_to_nunchuk(&nunchuk);
+            poll_nunchuk = 0;
         }
     }
 
@@ -672,7 +672,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _T3Interrupt(void) {
         // Start the PPM pulse train.
         ppm_state_transition();
     } else {
-        poll_nunchuck = 1;
+        poll_nunchuk = 1;
     }
 
     IFS0bits.T3IF = 0; // Clear Timer3 Interrupt Flag
@@ -683,7 +683,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _T4Interrupt(void) {
     // Continue with the next step in the PPM pulse train.
     int last_transition = ppm_state_transition();
     if (last_transition) {
-        poll_nunchuck = 1;
+        poll_nunchuk = 1;
     }
 
     IFS1bits.T4IF = 0; // Clear Timer4 Interrupt Flag

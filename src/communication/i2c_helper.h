@@ -38,6 +38,52 @@
 #define I2C_ERROR(message)
 #endif
 
+// FCY 29840000:
+//  100 MHz => FSCL == 100000 => I2C_SPEED == 270
+//  400 MHz => FSCL == 400000 => I2C_SPEED == 57
+//
+// Baud rate:
+// config2 = (FCY/FSCL - FCY/1111111) - 1;
+
+#define i2c_init(I2C_SPEED, SCL_TRIS, SDA_TRIS, SDA_LAT)             \
+do {                                                                 \
+    SCL_TRIS = 0;                                                    \
+    SDA_TRIS = 0;                                                    \
+                                                                     \
+    unsigned int config2 = I2C_SPEED;                                \
+                                                                     \
+    /* I2C in 7 bit address mode */                                  \
+    unsigned int config1 = (I2C1_ON                                  \
+            & I2C1_IDLE_CON                                          \
+            & I2C1_CLK_HLD                                           \
+            & I2C1_IPMI_DIS                                          \
+            & I2C1_7BIT_ADD                                          \
+            & I2C1_SLW_DIS                                           \
+            & I2C1_SM_DIS                                            \
+            & I2C1_GCALL_DIS                                         \
+            & I2C1_STR_DIS                                           \
+            & I2C1_NACK                                              \
+            & I2C1_ACK_DIS                                           \
+            & I2C1_RCV_DIS                                           \
+            & I2C1_STOP_DIS                                          \
+            & I2C1_RESTART_DIS                                       \
+            & I2C1_START_DIS);                                       \
+                                                                     \
+    /* WORKAROUND                                                 */ \
+    /* http://ww1.microchip.com/downloads/en/DeviceDoc/80470f.pdf */ \
+    /* Errata: 10                                                 */ \
+    SDA_LAT = 0;                                                     \
+    delay_us();                                                      \
+    SDA_LAT = 1;                                                     \
+                                                                     \
+    OpenI2C1(config1, config2);                                      \
+    IdleI2C1();                                                      \
+} while(0)
+
+// Provide consistent name with the other init functions.
+#define init_i2c(I2C_SPEED, SCL_TRIS, SDA_TRIS, SDA_LAT) \
+        i2c_init(I2C_SPEED, SCL_TRIS, SDA_TRIS, SDA_LAT)
+
 void i2c_start_and_wait() {
     StartI2C_();
     // Wait till Start sequence is completed

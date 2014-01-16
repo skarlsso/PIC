@@ -158,50 +158,6 @@ void init_uart(void) {
     U1STAbits.UTXEN   = 1; // Enable transmit
 }
 
-
-void init_i2c(void) {
-    TRISBbits.TRISB8 = 0;
-    TRISBbits.TRISB9 = 0;
-    // Setup I2C
-    // =========
-
-    // Baud rate
-    // FCY     = 29840000
-    // FCL     = 400000
-    // config2 = (FCY/FSCL - FCY/1111111) - 1;
-    // config2 = (29840000/400000 - 29840000/1111111) - 1;
-    // config2 = (74.6 - 26.85) - 1;  => 57
-    // config2 = (298.4 - 26.85) - 1; => 270
-    unsigned int config2 = 270;
-    //unsigned int config2 = 57;
-    // I2C in 7 bit address mode
-    unsigned int config1 = (I2C1_ON
-            & I2C1_IDLE_CON
-            & I2C1_CLK_HLD
-            & I2C1_IPMI_DIS
-            & I2C1_7BIT_ADD
-            & I2C1_SLW_DIS // ?
-            & I2C1_SM_DIS
-            & I2C1_GCALL_DIS
-            & I2C1_STR_DIS // ?
-            & I2C1_NACK
-            & I2C1_ACK_DIS
-            & I2C1_RCV_DIS
-            & I2C1_STOP_DIS // Tried
-            & I2C1_RESTART_DIS
-            & I2C1_START_DIS);
-
-    // WORKAROUND
-    // http://ww1.microchip.com/downloads/en/DeviceDoc/80470f.pdf
-    // Errata: 10
-    PORTBbits.RB9 = 0;
-    delay_ms(1);
-    PORTBbits.RB9 = 1;
-
-    OpenI2C1(config1, config2);
-    IdleI2C1();
-}
-
 void read_bytes_from_nunchuck(unsigned char bytes[NUNCHUCK_READ_BYTES]) {
     int i;
 
@@ -326,7 +282,7 @@ int main(void) {
     init_fcy();
     init_pins();
     init_uart();
-    init_i2c();
+    init_i2c(270, TRISBbits.TRISB8, TRISBbits.TRISB9, LATBbits.LATB9);
 
     printf("\n=== main_wii_chuck.c ===\n");
     fflush(stdout);

@@ -65,4 +65,36 @@
         ws2812b_send_byte(PIN, _ws2812b_b_variable); \
     } while (0)
 
+typedef struct {
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+} RGB;
+
+#define RGB_equals(value0, value1) \
+    (value0.r == value1.r && value0.g == value1.g && value0.b == value1.b)
+
+#define ws2812b_send_RGB(PIN, rgb) \
+    ws2812b_send_rgb(PIN, rgb.r, rgb.g, rgb.b)
+
+#define ws2812b_send_RGB16(PIN, rgb_array_16) \
+do {                                          \
+    ws2812b_send_RGB(PIN, rgb_array_16[0]);   \
+    ws2812b_send_RGB(PIN, rgb_array_16[1]);   \
+    ws2812b_send_RGB(PIN, rgb_array_16[2]);   \
+    ws2812b_send_RGB(PIN, rgb_array_16[3]);   \
+    ws2812b_send_RGB(PIN, rgb_array_16[4]);   \
+    ws2812b_send_RGB(PIN, rgb_array_16[5]);   \
+    ws2812b_send_RGB(PIN, rgb_array_16[6]);   \
+    ws2812b_send_RGB(PIN, rgb_array_16[7]);   \
+    ws2812b_send_RGB(PIN, rgb_array_16[8]);   \
+    ws2812b_send_RGB(PIN, rgb_array_16[9]);   \
+    ws2812b_send_RGB(PIN, rgb_array_16[10]);  \
+    ws2812b_send_RGB(PIN, rgb_array_16[11]);  \
+    ws2812b_send_RGB(PIN, rgb_array_16[12]);  \
+    ws2812b_send_RGB(PIN, rgb_array_16[13]);  \
+    ws2812b_send_RGB(PIN, rgb_array_16[14]);  \
+    ws2812b_send_RGB(PIN, rgb_array_16[15]);  \
+} while (0)
+
 #endif // WS2812B_H

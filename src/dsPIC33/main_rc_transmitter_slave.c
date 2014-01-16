@@ -98,7 +98,7 @@
 #define I2C_ERROR(message) pulse_forever2(ERROR_OUTPUT, 200, 200, 1)
 
 #include "communication/i2c_helper.h"
-#include "peripherals/controller/wii_nunchuck.h"
+#include "peripherals/controller/wii_nunchuk.h"
 #include "peripherals/led/ws2812b.h"
 
 // The PPM output is on IFF this is set to 1.

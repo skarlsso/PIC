@@ -5,8 +5,9 @@
 //
 // http://www.windmeadow.com/node/42
 //   I tried to follow this reference but never managed to read more than one
-//   package from the Nunchuck. It worked better when I changed the
+//   package from the Nunchuk. It worked better when I changed the
 //   start sequence 0x52 0x40 0x00 to the longer and more generic init sequence.
+//     This was probably because I didn't NACK the last read byte.
 //
 // http://thelast16bits.blogspot.se/2013/02/pic18f4550-interface-to-wii-nunchuck.html
 //   Gave hints about needed delays. One of many places where the longer init

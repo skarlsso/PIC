@@ -1,5 +1,24 @@
 #ifndef WII_NUNCHUK_H
-#define	WII_NUNCHUK_H
+#define WII_NUNCHUK_H
+
+// References:
+//
+// http://www.windmeadow.com/node/42
+//   I tried to follow this reference but never managed to read more than one
+//   package from the Nunchuk. It worked better when I changed the
+//   start sequence 0x52 0x40 0x00 to the longer and more generic init sequence.
+//     This was probably because I didn't NACK the last read byte.
+//
+// http://thelast16bits.blogspot.se/2013/02/pic18f4550-interface-to-wii-nunchuck.html
+//   Gave hints about needed delays. One of many places where the longer init
+//   sequence and package layout where given.
+//
+// http://www.wiibrew.org/wiki/Wiimote/Extension_Controllers/Nunchuck
+//   This is the page that a lot of other pages link to.
+//
+
+// NOTE: The interaction with the Nunchuk is very sensitive
+//       to the amount of delay between the operations.
 
 #include "communication/i2c_helper.h"
 #include "time/delayer.h"
